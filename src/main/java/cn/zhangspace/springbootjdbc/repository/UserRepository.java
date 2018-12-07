@@ -18,6 +18,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -58,6 +59,9 @@ public class UserRepository {
         try {
             connection = dataSource.getConnection();
             connection.setAutoCommit(false); //关闭自动提交
+
+            connection.commit();
+            connection.releaseSavepoint();
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users(name) VALUES (?);");
             preparedStatement.setString(1, user.getName());
             success = preparedStatement.executeUpdate() > 0;

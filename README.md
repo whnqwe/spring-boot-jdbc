@@ -202,11 +202,74 @@ TransactionDefinition{
 
 > 详细见代码
 
-### 事务的传播
+### 如何选择两种不同的方式
 
+> @Transactional 涉及到了事务需不需要嵌套的问题
+
+#### 事务的传播
 > Propagation.java
 
+```java
+//需要事务传播
+ REQUIRED(TransactionDefinition.PROPAGATION_REQUIRED), 
+ 
+ //支持事务传播
+ SUPPORTS(TransactionDefinition.PROPAGATION_SUPPORTS),
+ 
+ //强制事务传播
+MANDATORY(TransactionDefinition.PROPAGATION_MANDATORY),
+ 	
+ //创建新的事务传播
+REQUIRES_NEW(TransactionDefinition.PROPAGATION_REQUIRES_NEW),
+
+//嵌套事务(涉及到了还原点的概念)
+NESTED(TransactionDefinition.PROPAGATION_NESTED);
+...
+
+```
+
+#### 保护点
+> 事务是嵌套的，允许某个事务失败，当其中一个事务失败时，另一个正常提交。
+
+> 建立保护点 -->  rollback保护点 ---> 释放还原点
+```java
+method(){
+    Savepoint savepoint = connection.setSavepoint("t1");//Transactional-1            
+    try{
+        transactionalSave(); //Transactional-2
+    }catch (){
+        connection.rollback(savepoint);
+    }
+   connection.commit();
+   connection.releaseSavepoint("t1");
+   
+}   
+```
 
 
+假设一个service方法给了@Transaction标签，在这个方法中还有其他service 的某个方法，这个方法没有加@Transaction，那么如果内部方法报错，会回滚吗？
+
+答：会的，当然可以过滤掉一些不关紧要的异常noRollbackFor()
+
+# 总结
+
+1. JDBC单数据源配置
+
+2. JDBC多数据源配置
+
+3. webmvc webflux的区别
+
+4. 事务（与自动提交有关）
+    1. 注解模式  API模式
+    
+    2. 两个选择（选择与事务的传播有关）
+    
+    3. 隔离级别
+    
+    4. 事务的传播
+    
+    5. 保护点 （与嵌套事务有关）
+    
+5. 自动提交
 
 
