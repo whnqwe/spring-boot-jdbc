@@ -1,7 +1,7 @@
-package cn.zhangspace.repository;
+package cn.zhangspace.springbootjdbc.repository;
 
 
-import cn.zhangspace.domain.User;
+import cn.zhangspace.springbootjdbc.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -13,10 +13,11 @@ import java.util.Collections;
 @Repository
 public class UserRepository {
 
+
     private DataSource dataSource;
 
     @Autowired
-    private UserRepository(DataSource dataSource){
+    public UserRepository(DataSource dataSource){
         this.dataSource = dataSource;
      }
 

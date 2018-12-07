@@ -1,8 +1,8 @@
-package cn.zhangspace.webflux;
+package cn.zhangspace.springbootjdbc.webflux;
 
 
-import cn.zhangspace.domain.User;
-import cn.zhangspace.repository.UserRepository;
+import cn.zhangspace.springbootjdbc.domain.User;
+import cn.zhangspace.springbootjdbc.repository.UserRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;

@@ -1,14 +1,8 @@
-package cn.zhangspace.webflux;
+package cn.zhangspace.springbootjdbc.webflux;
 
 
-import cn.zhangspace.domain.User;
-import cn.zhangspace.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 

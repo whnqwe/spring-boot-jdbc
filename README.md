@@ -26,6 +26,8 @@ javax.sql.DataSource
 
 #### 数据源库连接池
 
+DataSourceConfiguration
+
 ##### [commons-dbcp](http://commons.apache.org/proper/commons-dbcp/)
    commons-dbcp2 
    

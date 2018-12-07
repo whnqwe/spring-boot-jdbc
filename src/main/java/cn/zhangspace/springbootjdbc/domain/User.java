@@ -1,4 +1,4 @@
-package cn.zhangspace.domain;
+package cn.zhangspace.springbootjdbc.domain;
 
 public class User {
 
