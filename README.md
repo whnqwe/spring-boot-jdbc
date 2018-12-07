@@ -50,18 +50,45 @@ spring.datasource.username=root
 spring.datasource.password=root
 ```
 
-## webflux 与 webmvcd的比较
+## webflux 与 webmvc的比较
 
-> WebFlux
+#### WebFlux
 
-> Mono : 0 - 1 Publisher（类似于Java 8 中的 Optional）
+>  Mono : 0 - 1 Publisher（类似于Java 8 中的 Optional）
   
 >  Flux:     0 - N Publisher（类似于Java 中的 List）
-  
->  传统的 Servlet 采用 HttpServletRequest、HttpServletResponse
-  
->  WebFlux 采用：ServerRequest、ServerResponse（不再限制于 Servlet 容器，可以选择自定义实现，比如 Netty Web Server
-   
->  在 Spring Web MVC 中使用 @RequestBody
 
->  在 Spring Web Flux 使用 ServerRequest.bodyToMono()
+ 1. WebFlux 采用：ServerRequest、ServerResponse（不再限制于 Servlet 容器，可以选择自定义实现，比如 Netty Web Server
+ 
+ 2. 在 Spring Web Flux 使用 ServerRequest.bodyToMono()
+ 
+ 3. webflux请求是异步的
+ 
+     > 演示代码见项目
+     
+     ```java
+      System.out.printf("[webFlux Thread : %s ] start saving user....\n",Thread.currentThread().getName());
+
+     ```
+     
+  
+#### webmvc  
+
+ 1. 传统的 Servlet 采用 HttpServletRequest、HttpServletResponse
+  
+ 2. 在 Spring Web MVC 中使用 @RequestBody
+
+ 3. webmvc 请求是同步的
+ 
+    > 演示代码见项目
+    
+         ```java
+        System.out.printf("[webMvc controller Thread : %s ] start saving user....\n",Thread.currentThread().getName());
+         ```
+    
+    > 修改为异步代码见项目代码
+
+         ```java
+        System.out.printf("[webMvc asyn controller Thread : %s ] start saving user....\n",Thread.currentThread().getName());
+         ```
+
