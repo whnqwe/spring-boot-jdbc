@@ -117,6 +117,13 @@ public UserRepository(DataSource dataSource,
 
 > 事务用于提供数据完整性，并发访问下保证数据视图一致性
 
+## 自动提交模式
+
+```java
+ connection.commit(); 
+ connection.setAutoCommit(false);
+```
+
 
 
 
