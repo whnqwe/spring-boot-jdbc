@@ -202,4 +202,11 @@ TransactionDefinition{
 
 > 详细见代码
 
+### 事务的传播
+
+> Propagation.java
+
+
+
+
 

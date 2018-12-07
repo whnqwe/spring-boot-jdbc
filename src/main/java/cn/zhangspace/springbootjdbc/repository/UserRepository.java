@@ -9,7 +9,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -31,16 +34,20 @@ public class UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private final PlatformTransactionManager platformTransactionManager;
+
     @Autowired
     public UserRepository(DataSource dataSource,
                           @Qualifier("masterDataSource") DataSource masterDataSource,
                           @Qualifier("salveDataSource") DataSource salveDataSource,
-                          JdbcTemplate jdbcTemplate
+                          JdbcTemplate jdbcTemplate,
+                          PlatformTransactionManager platformTransactionManager
                           ){
         this.dataSource = dataSource;
         this.masterDataSource = masterDataSource;
         this.salveDataSource = salveDataSource;
         this.jdbcTemplate = jdbcTemplate;
+        this.platformTransactionManager = platformTransactionManager;
     }
 
 
@@ -70,9 +77,8 @@ public class UserRepository {
         return success;
     }
 
-
     @Transactional
-    public boolean save(User user){
+    public boolean transactionalSave(User user){
         boolean success = false;
         success = jdbcTemplate.execute("INSERT INTO users(name) VALUES (?);",
                 new PreparedStatementCallback<Boolean>() {
@@ -86,6 +92,32 @@ public class UserRepository {
                 });
         return success;
     }
+
+
+    public boolean save(User user){
+        boolean success = false;
+
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        // 开始事务
+        TransactionStatus transactionStatus = platformTransactionManager.getTransaction(transactionDefinition);
+
+        success = jdbcTemplate.execute("INSERT INTO users(name) VALUES (?);",
+                new PreparedStatementCallback<Boolean>() {
+
+                    @Nullable
+                    @Override
+                    public Boolean doInPreparedStatement(PreparedStatement preparedStatement) throws SQLException, DataAccessException {
+                        preparedStatement.setString(1, user.getName());
+                        return preparedStatement.executeUpdate() > 0;
+                    }
+                });
+        platformTransactionManager.commit(transactionStatus);
+        return success;
+    }
+
+
+
+
 
     public Collection<User> findAll(){
         return Collections.emptyList();
