@@ -19,7 +19,7 @@
         <scope>runtime</scope>
     </dependency>
 ```
-## 数据源
+# 数据源
 
 #### 数据源相关类
 javax.sql.DataSource
@@ -70,7 +70,7 @@ spring.datasource.password=root
       System.out.printf("[webFlux Thread : %s ] start saving user....\n",Thread.currentThread().getName());
 
      ```
-     
+  
   
 #### webmvc  
 
@@ -88,4 +88,36 @@ spring.datasource.password=root
    >  修改为异步代码见项目代码
     
        System.out.printf("[webMvc asyn controller Thread : %s ] start saving user....\n",Thread.currentThread().getName());
-         
+
+## JDBC 多数据源配置
+
+> MultipleDataSourceConfiguration 
+
+```java
+class MultipleDataSourceConfiguration{
+    ...
+}
+```
+
+
+> UserController 
+```java
+@Autowired
+public UserRepository(DataSource dataSource,
+                      @Qualifier("masterDataSource") DataSource masterDataSource,
+                      @Qualifier("salveDataSource") DataSource salveDataSource
+                      ){
+    this.dataSource = dataSource;
+    this.masterDataSource = masterDataSource;
+    this.salveDataSource = salveDataSource;
+}
+```
+
+# 事务
+
+> 事务用于提供数据完整性，并发访问下保证数据视图一致性
+
+
+
+
+      

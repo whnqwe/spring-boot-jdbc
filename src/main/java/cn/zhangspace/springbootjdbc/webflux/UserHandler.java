@@ -21,6 +21,7 @@ public class UserHandler {
         // 在 Spring Web MVC 中使用 @RequestBody
         // 在 Spring Web Flux 使用 ServerRequest.bodyToMono()
         // Mono<User> 类似于 Optional<User>
+        System.out.printf("[webFlux Thread : %s ] start saving user....\n",Thread.currentThread().getName());
         Mono<User> userMono = serverRequest.bodyToMono(User.class);
         //相当于转换工作
         Mono<Boolean> booleanMono = userMono.map(userRepository::save);

@@ -15,8 +15,6 @@ public class WebFluxConfiguration {
 
     @Bean
     public RouterFunction<ServerResponse> saveUser(UserHandler userHandler){
-        System.out.printf("[webFlux Thread : %s ] start saving user....\n",Thread.currentThread().getName());
-
         return route(POST("/web/flux/user/save"),userHandler::save);
     }
 
