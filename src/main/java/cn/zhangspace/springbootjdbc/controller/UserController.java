@@ -23,9 +23,7 @@ public class UserController {
 
     @RequestMapping("/web/mvc/user/save")
     public Boolean save(@RequestBody User user){
-
         System.out.printf("[webMvc controller Thread : %s ] start saving user....\n",Thread.currentThread().getName());
-
         return  userRepository.save(user);
     }
 

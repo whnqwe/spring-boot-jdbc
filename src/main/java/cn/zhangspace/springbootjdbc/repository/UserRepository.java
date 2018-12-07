@@ -4,7 +4,12 @@ package cn.zhangspace.springbootjdbc.repository;
 import cn.zhangspace.springbootjdbc.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCallback;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -24,15 +29,18 @@ public class UserRepository {
 
     private final DataSource salveDataSource;
 
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public UserRepository(DataSource dataSource,
                           @Qualifier("masterDataSource") DataSource masterDataSource,
-                          @Qualifier("salveDataSource") DataSource salveDataSource
+                          @Qualifier("salveDataSource") DataSource salveDataSource,
+                          JdbcTemplate jdbcTemplate
                           ){
         this.dataSource = dataSource;
         this.masterDataSource = masterDataSource;
         this.salveDataSource = salveDataSource;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
 
@@ -63,13 +71,19 @@ public class UserRepository {
     }
 
 
+    @Transactional
     public boolean save(User user){
-
         boolean success = false;
+        success = jdbcTemplate.execute("INSERT INTO users(name) VALUES (?);",
+                new PreparedStatementCallback<Boolean>() {
 
-
-
-
+                    @Nullable
+                    @Override
+                    public Boolean doInPreparedStatement(PreparedStatement preparedStatement) throws SQLException, DataAccessException {
+                        preparedStatement.setString(1, user.getName());
+                        return preparedStatement.executeUpdate() > 0;
+                    }
+                });
         return success;
     }
 

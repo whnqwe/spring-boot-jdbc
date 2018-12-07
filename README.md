@@ -117,6 +117,8 @@ public UserRepository(DataSource dataSource,
 
 > 事务用于提供数据完整性，并发访问下保证数据视图一致性
 
+> 事务将自动提交取消，进行一系列操作之后，在commit()
+
 ## 自动提交模式
 
 ```java
@@ -124,7 +126,80 @@ public UserRepository(DataSource dataSource,
  connection.setAutoCommit(false);
 ```
 
+## 事务（Transaction）
+
+#### @Transaction
+>  @Transactional 代理执行 <b>TransactionInterceptor</b>
+    
+> TransactionInterceptor#invoke-> TransactionAspectSupport#invokeWithinTransaction
+
+```java
+   protected Object invokeWithinTransaction{
+   ...
+      		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
+   ...
+   }
+
+   TransactionAttribute{
+      isolationLevel; //隔离级别
+      propagationBehavior;  //事务传播
+   }
+   ```
+   
+> DataSourceTransactionManager#doCommit
+
+```java
+ protected void doCommit(DefaultTransactionStatus status) {
+    ...
+    Connection con = txObject.getConnectionHolder().getConnection();
+    ...
+    con.commit();
+    ...
+    
+ }
+```
+#### 事务的隔离级别
+
+> Connection
+
+```java
+Connection{
+    int TRANSACTION_READ_UNCOMMITTED = 1;
+    int TRANSACTION_READ_COMMITTED   = 2;
+    int TRANSACTION_REPEATABLE_READ  = 4;
+    int TRANSACTION_SERIALIZABLE     = 8;
+}
+```
+
+从上至下，级别越高，性能越差
+
+Spring Transaction 实现重用了 JDBC API：
+
+Isolation -> TransactionDefinition
+
+> Isolation
+
+```java
+public enum Isolation {
+    DEFAULT(TransactionDefinition.ISOLATION_DEFAULT),
+    READ_UNCOMMITTED(TransactionDefinition.ISOLATION_READ_UNCOMMITTED),
+    READ_COMMITTED(TransactionDefinition.ISOLATION_READ_COMMITTED),
+    REPEATABLE_READ(TransactionDefinition.ISOLATION_REPEATABLE_READ),
+    SERIALIZABLE(TransactionDefinition.ISOLATION_SERIALIZABLE);
+}
+```
+> TransactionDefinition
+```java
+TransactionDefinition{
+    int ISOLATION_READ_UNCOMMITTED = Connection.TRANSACTION_READ_UNCOMMITTED;
+	int ISOLATION_READ_COMMITTED = Connection.TRANSACTION_READ_COMMITTED;
+	int ISOLATION_REPEATABLE_READ = Connection.TRANSACTION_REPEATABLE_READ;
+	int ISOLATION_SERIALIZABLE = Connection.TRANSACTION_SERIALIZABLE;
+}
+```
+
+### 通过 API 方式进行事务处理 - PlatformTransactionManager
+
+> 详细见代码
 
 
-
-      
