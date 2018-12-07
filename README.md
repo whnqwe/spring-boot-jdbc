@@ -82,13 +82,10 @@ spring.datasource.password=root
  
     > 演示代码见项目
     
-         ```java
-        System.out.printf("[webMvc controller Thread : %s ] start saving user....\n",Thread.currentThread().getName());
-         ```
+       System.out.printf("[webMvc controller Thread : %s ] start saving user....\n",Thread.currentThread().getName());
+        
+          
+   >  修改为异步代码见项目代码
     
-    > 修改为异步代码见项目代码
-
-         ```java
         System.out.printf("[webMvc asyn controller Thread : %s ] start saving user....\n",Thread.currentThread().getName());
-         ```
-
+         
